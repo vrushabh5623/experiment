@@ -39,6 +39,7 @@ constraint pk1_supply primary key (pnum, snum,dnum));
 
 #exp 5
 #inset table2:
+alter table supply add QTY number(2);
 INSERT INTO dept1 (dnum, dname, mgr, area) VALUES (101, 'CT', 1000, 'N');
 INSERT INTO dept1 (dnum, dname, mgr, area) VALUES (102, 'IT', 2000, 'S');
 INSERT INTO dept1 (dnum, dname, mgr, area) VALUES (103, 'EL', 3000, 'N');
