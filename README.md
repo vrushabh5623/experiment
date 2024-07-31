@@ -74,3 +74,32 @@ SELECT name, salary FROM emp3 WHERE dnum1 = 102;
 select supplier12.snum, supplier12.name, dept1.dnum, dept1.dname from supplier12, supply, dept1 where supplier12.snum = supply.snum and supply.dnum = dept1.dnum and dept1.dname =  'IT';
 select supplier12.name from supplier12, dept1, supply where supplier12.city = 'NXP' and dept1.area = 'S';
 
+
+
+SELECT emp3.name, dept1.dname, dept1.area 
+FROM emp3, dept1 
+WHERE emp3.dnum1 = dept1.dnum 
+  AND emp3.name LIKE 'A%';
+
+SELECT supplier12.name, supply.QTY, dept1.dname, supply.pnum 
+FROM supplier12, supply, dept1 
+WHERE supplier12.snum = supply.snum 
+  AND supply.dnum = dept1.dnum 
+  AND supply.pnum = 201;
+
+CREATE TABLE emp_Admin AS (SELECT enum, name, dnum1 AS dnum, mgr FROM emp3);
+create table emp_pay as(select enum, name, salary, tax from emp3);
+SELECT name, salary AS gps_pay, tax AS net_pay FROM emp3;
+INSERT INTO dept1 (dnum, dname, mgr, area) VALUES (108, 'CE', 8000, 'S');
+INSERT INTO emp3 (enum, name, salary, tax, mgr, dnum1) VALUES (92010, 'rohan', 15000, 1500, 8000, 108);
+
+SELECT emp3.enum, emp3.name, emp3.salary, dept1.area 
+FROM emp3, dept1 
+WHERE emp3.dnum1 = dept1.dnum 
+  AND emp3.salary > 11000 
+  AND dept1.area = 'S';
+SELECT dept1.dname, supplier12.name 
+FROM dept1, supplier12, supply 
+WHERE supplier12.snum = supply.snum 
+  AND supply.dnum = dept1.dnum 
+  AND supply.pnum = 201;
