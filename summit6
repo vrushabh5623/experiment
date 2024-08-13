@@ -1,0 +1,91 @@
+create table sailor(sid number(3), sname char(20), rating number(2), age number(5,2));
+insert into sailor(sid, sname, rating, age)values (22,'nelson',7,45.0);
+insert into sailor(sid, sname, rating, age)values (29,'Brutus',1,33.0);
+insert into sailor(sid, sname, rating, age)values (31,'Lubber',8,55.0);
+insert into sailor(sid, sname, rating, age)values (32,'Andy',8,25.0);
+insert into sailor(sid, sname, rating, age)values (58,'Dustin',10,35.0);
+insert into sailor(sid, sname, rating, age)values (64,'Haratio',7,35.0);
+insert into sailor(sid, sname, rating, age)values (71,'Zorba',10,16.0);
+insert into sailor(sid, sname, rating, age)values (74,'Haratio',9,35.0);
+
+
+CREATE TABLE reserves (sid NUMBER(3), bid NUMBER(3), day DATE);
+INSERT INTO reserves(sid, bid, day) VALUES (22, 102, '10-oct-98');
+INSERT INTO reserves(sid, bid, day) VALUES (22, 103, '10-sep-98');
+INSERT INTO reserves(sid, bid, day) VALUES (22, 104, '10-jul-98');
+INSERT INTO reserves(sid, bid, day) VALUES (31, 102, '11-oct-98');
+INSERT INTO reserves(sid, bid, day) VALUES (31, 103, '11-jun-98');
+INSERT INTO reserves(sid, bid, day) VALUES (31, 104, '11-dec-98');
+INSERT INTO reserves(sid, bid, day) VALUES (64, 101, '09-may-98');
+INSERT INTO reserves(sid, bid, day) VALUES (74, 103, '09-aug-98');
+
+
+CREATE TABLE boats(bid NUMBER(3), bname CHAR(50), color CHAR(5));
+INSERT INTO boats(bid, bname, color) VALUES (101, 'intertake', 'blue');
+INSERT INTO boats(bid, bname, color) VALUES (102, 'intertake', 'red');
+INSERT INTO boats(bid, bname, color) VALUES (109, 'clipper', 'green');
+INSERT INTO boats(bid, bname, color) VALUES (104, 'marine', 'red');
+
+
+
+
+
+SELECT sname, age FROM sailor;
+
+SELECT * FROM sailor WHERE rating > 7;
+
+SELECT sailor.sname, sailor.sid FROM sailor, reserves WHERE sailor.sid = reserves.sid AND reserves.bid = 103;
+
+
+SELECT DISTINCT reserves.sid  FROM reserves, boats WHERE boats.bid = reserves.bid AND color = 'red';
+
+SELECT DISTINCT boats.color FROM sailor, boats, reserves WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND sailor.sname = 'Nelson';
+
+
+SELECT DISTINCT sailor.sid, COUNT(reserves.bid) AS booked FROM sailor, reserves WHERE sailor.sid = reserves.sid GROUP BY sailor.sid HAVING COUNT(reserves.bid) >= 1;
+
+SELECT sname, age FROM sailor WHERE sname LIKE 'B_b%';
+
+SELECT DISTINCT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color IN ('red','green');
+
+SELECT DISTINCT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color = 'red' INTERSECT SELECT DISTINCT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color = 'green';
+
+
+SELECT s.sid FROM sailor s, reserves r, boats b WHERE s.sid = r.sid AND r.bid = b.bid AND b.color = 'red' MINUS SELECT s2.sid FROM sailor s2, reserves r2, boats b2 WHERE s2.sid = r2.sid 
+AND r2.bid = b2.bid AND b2.color = 'green';
+
+
+EXPERIMENT NO 7
+
+SELECT DISTINCT sname FROM sailor, reserves WHERE sailor.sid = reserves.sid AND reserves.bid = 103;
+
+
+SELECT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND boats.bid = reserves.bid AND boats.color = 'red';
+
+SELECT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color = 'red';
+
+
+SELECT DISTINCT sname FROM sailor WHERE rating > (SELECT rating FROM sailor WHERE sname = 'nelson');
+
+
+SELECT sailor.sname, sailor.rating FROM sailor WHERE sailor.rating > ALL (SELECT rating FROM sailor WHERE sname = 'Haratio');
+
+
+SELECT sid FROM sailor WHERE sailor.rating >= ALL (SELECT rating FROM sailor);
+
+
+SELECT DISTINCT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color = 'red' INTERSECT SELECT DISTINCT sname FROM sailor, reserves, boats WHERE sailor.sid = reserves.sid AND reserves.bid = boats.bid AND boats.color = 'green';
+
+
+SELECT sailor.sname 
+FROM sailor 
+WHERE NOT EXISTS (
+    SELECT boats.bid 
+    FROM boats 
+    WHERE NOT EXISTS (
+        SELECT reserves.bid 
+        FROM reserves 
+        WHERE reserves.bid = boats.bid AND reserves.sid = sailor.sid
+    )
+);
+
